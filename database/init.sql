@@ -1,0 +1,20 @@
+CREATE DATABASE IF NOT EXISTS taskdb;
+USE taskdb;
+CREATE TABLE IF NOT EXISTS users (
+id INT AUTO_INCREMENT PRIMARY KEY,
+first_name VARCHAR(50),
+last_name VARCHAR(50),
+age INT
+);
+CREATE TABLE IF NOT EXISTS tasks (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50),
+description TEXT,
+due_date DATETIME
+);
+CREATE TABLE IF NOT EXISTS user_tasks (
+user_id INT,
+task_id INT,
+FOREIGN KEY (user_id) REFERENCES users(id),
+FOREIGN KEY (task_id) REFERENCES tasks(id)
+);

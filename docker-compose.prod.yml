@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  db:
+    image: task-management-app-db:latest
+    container_name: taskapp-db
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: taskdb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: password
+    volumes:
+      - db_data:/var/lib/mysql
+
+  server:
+    image: task-management-app-server:latest
+    container_name: taskapp-server
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_NAME: taskdb
+      PORT: 3001
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile.prod
+      args:
+        REACT_APP_SERVER_URL: http://4.233.149.184:3001/api
+    container_name: taskapp-client-prod
+    restart: unless-stopped
+    ports:
+      - "3002:80"
+    depends_on:
+      - server
+
+volumes:
+  db_data:
